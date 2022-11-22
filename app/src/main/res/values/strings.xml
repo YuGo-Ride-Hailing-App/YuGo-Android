@@ -40,4 +40,6 @@
     <string name="select_from_gallery">select from gallery</string>
     <string name="registration_licence">Registration licence:</string>
     <string name="split_fare">split fare</string>
+    <string name="start_date">Start date:</string>
+    <string name="end_date">End date:</string>
 </resources>
