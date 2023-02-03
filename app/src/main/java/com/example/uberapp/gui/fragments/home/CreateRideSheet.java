@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import com.example.uberapp.R;
 import com.example.uberapp.core.LocalSettings;
 import com.example.uberapp.core.auth.TokenManager;
+import com.example.uberapp.core.dto.FavoritePathDTO;
 import com.example.uberapp.core.dto.LocationDTO;
 import com.example.uberapp.core.dto.PathDTO;
 import com.example.uberapp.core.dto.RideDetailedDTO;
@@ -161,7 +162,17 @@ public class CreateRideSheet extends BottomSheetDialogFragment implements
 
     }
 
-
+    public void loadFavoritePath(FavoritePathDTO favoritePath){
+        PathDTO path = favoritePath.getLocations().get(0);
+        LocationInfo departure = new LocationInfo(path.getDeparture().getAddress(), path.getDeparture().getLatitude(), path.getDeparture().getLongitude());
+        LocationInfo destination = new LocationInfo(path.getDestination().getAddress(), path.getDestination().getLatitude(), path.getDestination().getLongitude());
+        subFrag01.setDepartureAddress(departure);
+        subFrag01.setDestinationAddress(destination);
+        subFrag02.setVehicleType(favoritePath.getVehicleType(), favoritePath.getBabyTransport(), favoritePath.getPetTransport());
+        getChildFragmentManager().beginTransaction().replace(R.id.createRideFrameLayout, subFrag03).commit();
+        buttonPrev.setVisibility(View.VISIBLE);
+        buttonNext.setVisibility(View.VISIBLE);
+    }
 
     @Override
     public void onRideRouteChanged(LocationInfo departure, LocationInfo destination) {
@@ -289,16 +300,6 @@ public class CreateRideSheet extends BottomSheetDialogFragment implements
             }
             currentSubfragment++;
         });
-    }
-    public void loadSubfragemnts(){
-        this.subFrag01 = new CreateRideSubfragment01();
-        this.subFrag02 = new CreateRideSubfragment02();
-        this.subFrag03 = new CreateRideSubfragment03();
-        this.subFrag04 = new CreateRideSubfragment04();
-        this.createRideLoader = new CreateRideLoader();
-        getChildFragmentManager().beginTransaction().replace(R.id.createRideFrameLayout, this.subFrag01).commit();
-        configureButtons();
-
     }
 
     public void setDestination(LocationInfo destination) {

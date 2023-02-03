@@ -29,8 +29,10 @@ import android.widget.Toast;
 import com.example.uberapp.R;
 import com.example.uberapp.core.LocalSettings;
 import com.example.uberapp.core.dto.AllRidesDTO;
+import com.example.uberapp.core.dto.FavoritePathDTO;
 import com.example.uberapp.core.dto.LocationDTO;
 import com.example.uberapp.core.dto.MessageDTO;
+import com.example.uberapp.core.dto.PathDTO;
 import com.example.uberapp.core.dto.RideDetailedDTO;
 import com.example.uberapp.core.dto.VehicleDTO;
 import com.example.uberapp.core.model.LocationInfo;
@@ -104,6 +106,12 @@ public class HomeFragment extends Fragment implements CurrentRideFragment.OnEndC
         createNotificationChannel();
     }
 
+    public void loadFavoritePath(FavoritePathDTO favoritePath){
+        createRideSheet = new CreateRideSheet();
+        getChildFragmentManager().beginTransaction().replace(R.id.homeFragmentContentHolder, createRideSheet).commit();
+        createRideSheet.loadFavoritePath(favoritePath);
+        createRideSheet.show(getChildFragmentManager(), null);
+    }
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel vehicleArrivalChannel = new NotificationChannel("VehicleArrivalNotificationID", "Vehicle arrival", NotificationManager.IMPORTANCE_DEFAULT);

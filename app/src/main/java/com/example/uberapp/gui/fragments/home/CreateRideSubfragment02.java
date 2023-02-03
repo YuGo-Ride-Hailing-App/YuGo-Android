@@ -38,7 +38,8 @@ public class CreateRideSubfragment02 extends Fragment {
     ListView listView;
     VehicleTypeAdapter adapter;
     View view;
-
+    CheckBox babyTransportCheckBox;
+    CheckBox petTransportCheckBox;
     VehicleType vehicleType = null;
     boolean isBabyTransport = false;
     boolean isPetTransport = false;
@@ -55,6 +56,31 @@ public class CreateRideSubfragment02 extends Fragment {
     }
     OnRidePropertiesChangedListener propertiesChangedListener;
 
+    public void setVehicleType(String vehicleType, boolean isBabyTransport, boolean isPetTransport){
+        for(VehicleType vt : vehicleTypes){
+            if(vt.getVehicleCategory() == VehicleCategory.valueOf(vehicleType)){
+                this.vehicleType = vt;
+                this.isBabyTransport = isBabyTransport;
+                this.isPetTransport = isPetTransport;
+                petTransportCheckBox.setChecked(isPetTransport);
+                babyTransportCheckBox.setChecked(isBabyTransport);
+                propertiesChangedListener.onBabyTransportChanged(isBabyTransport);
+                propertiesChangedListener.onPetTransportChanged(isPetTransport);
+                propertiesChangedListener.onVehicleTypeChanged(this.vehicleType);
+                break;
+            }
+        }
+        listView.findViewById(R.id.standardListItem).setBackgroundResource(0);
+        listView.findViewById(R.id.vanListItem).setBackgroundResource(0);
+        listView.findViewById(R.id.luxListItem).setBackgroundResource(0);
+        if(this.vehicleType.getVehicleCategory() == VehicleCategory.STANDARD){
+            listView.findViewById(R.id.standardListItem).setBackgroundResource(R.drawable.vehicle_type_card_shape_selected);
+        }else if (this.vehicleType.getVehicleCategory() == VehicleCategory.VAN) {
+            listView.findViewById(R.id.vanListItem).setBackgroundResource(R.drawable.vehicle_type_card_shape_selected);
+        }else {
+            listView.findViewById(R.id.luxListItem).setBackgroundResource(R.drawable.vehicle_type_card_shape_selected);
+        }
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +107,7 @@ public class CreateRideSubfragment02 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_create_ride_subfragment02, container, false);
+
         listView = view.findViewById(R.id.listViewVehicleType);
         adapter = new VehicleTypeAdapter((Activity) getContext(), vehicleTypes, road);
         listView.setAdapter(adapter);
@@ -92,7 +119,7 @@ public class CreateRideSubfragment02 extends Fragment {
             propertiesChangedListener.onVehicleTypeChanged(vehicleType);
             v.findViewById(R.id.vehicleTypeCardBackgroundHolder).setBackgroundResource(R.drawable.vehicle_type_card_shape_selected);
         });
-        CheckBox babyTransportCheckBox = view.findViewById(R.id.checkBoxIncludeBaby);
+        babyTransportCheckBox = view.findViewById(R.id.checkBoxIncludeBaby);
         babyTransportCheckBox.setChecked(isBabyTransport);
         babyTransportCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -101,7 +128,7 @@ public class CreateRideSubfragment02 extends Fragment {
                 propertiesChangedListener.onBabyTransportChanged(isBabyTransport);
             }
         });
-        CheckBox petTransportCheckBox = view.findViewById(R.id.checkBoxIncludePets);
+        petTransportCheckBox = view.findViewById(R.id.checkBoxIncludePets);
         petTransportCheckBox.setChecked(isPetTransport);
         petTransportCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

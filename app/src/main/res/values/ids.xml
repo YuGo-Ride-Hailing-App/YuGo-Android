@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="sendBtnDriverHistory" type="id" />
+    <item name="standardListItem" type="id"/>
+    <item name="vanListItem" type="id"/>
+    <item name="luxListItem" type="id"/>
 </resources>

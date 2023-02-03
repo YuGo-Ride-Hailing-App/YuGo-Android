@@ -1,6 +1,7 @@
 package com.example.uberapp.gui.activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
@@ -8,12 +9,16 @@ import androidx.core.app.NotificationManagerCompat;
 
 import android.Manifest;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.uberapp.core.LocalSettings;
 import com.example.uberapp.core.auth.TokenManager;
+import com.example.uberapp.core.dto.FavoritePathDTO;
 import com.example.uberapp.core.dto.MessageDTO;
 import com.example.uberapp.core.dto.UserDetailedDTO;
 import com.example.uberapp.core.services.APIClient;
@@ -60,6 +65,12 @@ public class PassengerMainActivity extends AppCompatActivity implements Navigati
         bottomNavigationView = findViewById(R.id.passengerBottomNavigationView);
         bottomNavigationView.setOnItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.passenger_home);
+
+        FavoritePathDTO favoritePath = (FavoritePathDTO) getIntent().getSerializableExtra("FAVORITE_PATH");
+        if(favoritePath != null){
+            getSupportFragmentManager().beginTransaction().replace(R.id.flPassengerMainFragment, homeFragment).commit();
+            homeFragment.loadFavoritePath(favoritePath);
+        }
 
         this.setupMessagesSocket();
     }

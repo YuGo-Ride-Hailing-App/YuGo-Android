@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.uberapp.R;
+import com.example.uberapp.core.model.VehicleCategory;
 import com.example.uberapp.core.model.VehicleType;
 import com.example.uberapp.core.tools.VehicleTypeMockup;
 
@@ -46,6 +47,13 @@ public class VehicleTypeAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         VehicleType vht = data.get(i);
         View v = view;
+        if(vht.getVehicleCategory() == VehicleCategory.STANDARD){
+            v.setId(R.id.standardListItem);
+        } else if (vht.getVehicleCategory() == VehicleCategory.VAN) {
+            v.setId(R.id.vanListItem);
+        }else{
+            v.setId(R.id.luxListItem);
+        }
 
         if(view == null){
             v = LayoutInflater.from(activity).inflate(R.layout.list_item_vehicle_type, null);

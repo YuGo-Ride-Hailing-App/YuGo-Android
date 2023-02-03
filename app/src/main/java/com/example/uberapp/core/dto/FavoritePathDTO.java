@@ -1,8 +1,9 @@
 package com.example.uberapp.core.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class FavoritePathDTO {
+public class FavoritePathDTO implements Serializable {
     private String favoriteName;
     private List<PathDTO> locations;
     private List<UserSimplifiedDTO> passengers;
