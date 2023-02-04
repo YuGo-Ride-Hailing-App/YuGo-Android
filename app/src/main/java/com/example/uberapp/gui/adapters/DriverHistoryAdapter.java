@@ -233,6 +233,7 @@ public class DriverHistoryAdapter extends BaseAdapter {
         final float scale = activity.getResources().getDisplayMetrics().density;
         LinearLayout mapLayout = (LinearLayout) v.findViewById(R.id.mapHistoryLayout);
         if (mapLayout.findViewWithTag(vht.getId()+"_map")==null) {
+            mapLayout.removeAllViews();
             mapLayout.addView(mapViews.get(i));
             mapViews.get(i).setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (150 * scale + 0.5f)));
             mapViews.get(i).setTag(vht.getId() + "_map");

@@ -157,12 +157,15 @@ public class DriverMainActivity extends AppCompatActivity implements NavigationB
             public void onResponse(@NonNull Call<UserDetailedDTO> call, @NonNull Response<UserDetailedDTO> response) {
                 if (response.code() == 200){
                     UserDetailedDTO sender = response.body();
+                    String messageContent=messageDTO.getMessage();
+                    if (messageDTO.getMessage().length()>40)
+                        messageContent=messageContent.substring(0,40);
 
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(DriverMainActivity.this, "MessageNotificationID")
                             .setSmallIcon(R.drawable.icon_notification)
-                            .setStyle(new NotificationCompat.BigTextStyle().bigText(messageDTO.getMessage().substring(0, 40)))
+                            .setStyle(new NotificationCompat.BigTextStyle().bigText(messageContent))
                             .setContentTitle("Message from: " + sender.getName() + " " + sender.getSurname())
-                            .setContentText(messageDTO.getMessage().substring(0, 40) + "...")
+                            .setContentText(messageContent)
                             .setPriority(NotificationCompat.PRIORITY_DEFAULT);
                     NotificationManagerCompat notificationManager = NotificationManagerCompat.from(DriverMainActivity.this);
                     if (ActivityCompat.checkSelfPermission(DriverMainActivity.this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {

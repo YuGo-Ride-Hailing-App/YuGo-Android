@@ -25,11 +25,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.example.uberapp.R;
 import com.example.uberapp.core.LocalSettings;
 import com.example.uberapp.core.dto.AllRidesDTO;
 import com.example.uberapp.core.dto.FavoritePathDTO;
+import com.example.uberapp.core.dto.DriverStatus;
 import com.example.uberapp.core.dto.LocationDTO;
 import com.example.uberapp.core.dto.MessageDTO;
 import com.example.uberapp.core.dto.PathDTO;
@@ -86,6 +88,7 @@ public class HomeFragment extends Fragment implements CurrentRideFragment.OnEndC
     private Fragment parentFragment;
     private FragmentManager fragmentManager;
     private CreateRideSheet createRideSheet;
+    private ToggleButton driverStatusToggleButton;
     private Vibrator vibrator;
 
     private VehicleDTO vehicle;
@@ -199,6 +202,35 @@ public class HomeFragment extends Fragment implements CurrentRideFragment.OnEndC
 
         Call<RideDetailedDTO> activeRide;
         if (TokenManager.getRole().equals("DRIVER")) {
+            driverStatusToggleButton = view.findViewById(R.id.btnDriverOnlineStatus);
+            driverStatusToggleButton.setOnClickListener(v -> {
+                Call<Void> driverStatusUpdateRequest = driverService.updateDriverStatus(TokenManager.getUserId(), new DriverStatus(driverStatusToggleButton.isChecked()));
+                driverStatusUpdateRequest.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+
+                    }
+                });
+            });
+
+            Call<DriverStatus> driverStatusRequest = driverService.getDriverStatus(TokenManager.getUserId());
+            driverStatusRequest.enqueue(new Callback<>() {
+                @Override
+                public void onResponse(Call<DriverStatus> call, Response<DriverStatus> response) {
+                    driverStatusToggleButton.setChecked(response.body().isOnline());
+                }
+
+                @Override
+                public void onFailure(Call<DriverStatus> call, Throwable t) {
+
+                }
+            });
+
             activeRide = rideService.getActiveDriverRide(TokenManager.getUserId());
             mapFragment = MapFragment.newInstance(false);
             Call<VehicleDTO> vehicleRequest = driverService.getVehicle(TokenManager.getUserId());

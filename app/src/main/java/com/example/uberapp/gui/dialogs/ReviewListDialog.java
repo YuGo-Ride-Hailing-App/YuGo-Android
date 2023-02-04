@@ -57,8 +57,7 @@ public class ReviewListDialog extends Dialog  {
             public void onResponse(Call<List<AcumulatedReviewsDTO>> call, Response<List<AcumulatedReviewsDTO>> response) {
                 List<ReviewResponseDTO> reviews=new ArrayList<>();
                 List<AcumulatedReviewsDTO> acumulatedReviews=response.body();
-                if (acumulatedReviews!=null){
-
+                if (acumulatedReviews.size()!=0){
                 for (AcumulatedReviewsDTO acumulatedReview:acumulatedReviews) {
                     if (acumulatedReview.getVehicleReview()!=null){
                         ReviewResponseDTO newReview= acumulatedReview.getVehicleReview();
@@ -75,6 +74,7 @@ public class ReviewListDialog extends Dialog  {
                 listView.setAdapter(adapter);
                 }
                 else {
+                    dismiss();
                     Toast.makeText(getContext(), "There is no reviews for this ride" , Toast.LENGTH_SHORT).show();
 
                 }
@@ -82,7 +82,9 @@ public class ReviewListDialog extends Dialog  {
 
             @Override
             public void onFailure(Call<List<AcumulatedReviewsDTO>> call, Throwable t) {
-                Toast.makeText(getContext(), "Ups, something went wrong" , Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(getContext(), t.getMessage() , Toast.LENGTH_SHORT).show();
+                System.out.println(t.getMessage());
             }
         });
     }

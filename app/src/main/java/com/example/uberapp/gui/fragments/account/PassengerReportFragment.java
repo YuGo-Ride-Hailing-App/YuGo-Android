@@ -292,7 +292,7 @@ public class PassengerReportFragment extends Fragment {
             } else if (value > 4 && value <= 5) {
                 position = 3;
             }
-            if (position < datesList.size())
+            if (position < datesList.size() && position>=0)
                 return sdf.format(new Date((getDateInMilliSeconds(datesList.get(position), "yyyy-MM-dd"))));
             return "";
         }

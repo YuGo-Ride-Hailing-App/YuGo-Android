@@ -2,6 +2,7 @@ package com.example.uberapp.core.services;
 
 import com.example.uberapp.core.dto.AllRidesDTO;
 import com.example.uberapp.core.dto.DocumentDTO;
+import com.example.uberapp.core.dto.DriverStatus;
 import com.example.uberapp.core.dto.StatisticsDTO;
 import com.example.uberapp.core.dto.UserDetailedDTO;
 import com.example.uberapp.core.dto.VehicleDTO;
@@ -43,4 +44,10 @@ public interface DriverService {
 
     @DELETE("api/driver/document/{documentId}")
     Call<ResponseBody> deleteDocument(@Path("documentId") Integer documentId);
+
+    @PUT("api/driver/status/{driverId}")
+    Call<Void> updateDriverStatus(@Path("driverId") Integer driverId, @Body DriverStatus driverStatus);
+
+    @GET("api/driver/status/{driverId}")
+    Call<DriverStatus> getDriverStatus(@Path("driverId") Integer driverId);
 }
