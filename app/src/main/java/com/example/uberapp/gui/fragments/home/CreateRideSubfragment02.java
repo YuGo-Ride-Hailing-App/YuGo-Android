@@ -15,6 +15,7 @@ import android.widget.ListView;
 import androidx.fragment.app.Fragment;
 
 import com.example.uberapp.R;
+import com.example.uberapp.core.dto.FavoritePathDTO;
 import com.example.uberapp.core.dto.VehicleTypeDTO;
 import com.example.uberapp.core.model.VehicleCategory;
 import com.example.uberapp.core.model.VehicleType;
@@ -28,11 +29,14 @@ import org.osmdroid.bonuspack.routing.Road;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class CreateRideSubfragment02 extends Fragment {
 
-    VehicleTypeService vehicleTypeService;
+    VehicleTypeService vehicleTypeService = APIClient.getClient().create(VehicleTypeService.class);
     List<VehicleType> vehicleTypes;
     ImageService imageService;
     ListView listView;
@@ -56,36 +60,76 @@ public class CreateRideSubfragment02 extends Fragment {
     }
     OnRidePropertiesChangedListener propertiesChangedListener;
 
+    public CreateRideSubfragment02() {
+    }
+
     public void setVehicleType(String vehicleType, boolean isBabyTransport, boolean isPetTransport){
-        for(VehicleType vt : vehicleTypes){
-            if(vt.getVehicleCategory() == VehicleCategory.valueOf(vehicleType)){
-                this.vehicleType = vt;
-                this.isBabyTransport = isBabyTransport;
-                this.isPetTransport = isPetTransport;
-                petTransportCheckBox.setChecked(isPetTransport);
-                babyTransportCheckBox.setChecked(isBabyTransport);
-                propertiesChangedListener.onBabyTransportChanged(isBabyTransport);
-                propertiesChangedListener.onPetTransportChanged(isPetTransport);
-                propertiesChangedListener.onVehicleTypeChanged(this.vehicleType);
-                break;
+
+        if (vehicleTypes==null){
+            Single<List<VehicleType>> result = vehicleTypeService.getVehicleTypes()
+                    .flatMapIterable(vehicleTypeDTOS -> vehicleTypeDTOS)
+                    .flatMap(vehicleTypeDTO -> fetchImage(vehicleTypeDTO).subscribeOn(Schedulers.io())).toList();
+            result.observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(vehicleTypes -> {
+                        this.vehicleTypes = vehicleTypes;
+                        for(VehicleType vt : vehicleTypes){
+                            if(vt.getVehicleCategory() == VehicleCategory.valueOf(vehicleType)){
+                                this.vehicleType = vt;
+                                this.isBabyTransport = isBabyTransport;
+                                this.isPetTransport = isPetTransport;
+                                petTransportCheckBox.setChecked(isPetTransport);
+                                babyTransportCheckBox.setChecked(isBabyTransport);
+                                propertiesChangedListener.onBabyTransportChanged(isBabyTransport);
+                                propertiesChangedListener.onPetTransportChanged(isPetTransport);
+                                propertiesChangedListener.onVehicleTypeChanged(this.vehicleType);
+                                break;
+                            }
+                        }
+                        listView.findViewById(R.id.standardListItem).setBackgroundResource(0);
+                        listView.findViewById(R.id.vanListItem).setBackgroundResource(0);
+                        listView.findViewById(R.id.luxListItem).setBackgroundResource(0);
+                        if(this.vehicleType.getVehicleCategory() == VehicleCategory.STANDARD){
+                            listView.findViewById(R.id.standardListItem).setBackgroundResource(R.drawable.vehicle_type_card_shape_selected);
+                        }else if (this.vehicleType.getVehicleCategory() == VehicleCategory.VAN) {
+                            listView.findViewById(R.id.vanListItem).setBackgroundResource(R.drawable.vehicle_type_card_shape_selected);
+                        }else {
+                            listView.findViewById(R.id.luxListItem).setBackgroundResource(R.drawable.vehicle_type_card_shape_selected);
+                        }
+                    });
+        }
+        else{
+            for(VehicleType vt : vehicleTypes){
+                if(vt.getVehicleCategory() == VehicleCategory.valueOf(vehicleType)){
+                    this.vehicleType = vt;
+                    this.isBabyTransport = isBabyTransport;
+                    this.isPetTransport = isPetTransport;
+                    petTransportCheckBox.setChecked(isPetTransport);
+                    babyTransportCheckBox.setChecked(isBabyTransport);
+                    propertiesChangedListener.onBabyTransportChanged(isBabyTransport);
+                    propertiesChangedListener.onPetTransportChanged(isPetTransport);
+                    propertiesChangedListener.onVehicleTypeChanged(this.vehicleType);
+                    break;
+                }
             }
+            listView.findViewById(R.id.standardListItem).setBackgroundResource(0);
+            listView.findViewById(R.id.vanListItem).setBackgroundResource(0);
+            listView.findViewById(R.id.luxListItem).setBackgroundResource(0);
+            if(this.vehicleType.getVehicleCategory() == VehicleCategory.STANDARD){
+                listView.findViewById(R.id.standardListItem).setBackgroundResource(R.drawable.vehicle_type_card_shape_selected);
+            }else if (this.vehicleType.getVehicleCategory() == VehicleCategory.VAN) {
+                listView.findViewById(R.id.vanListItem).setBackgroundResource(R.drawable.vehicle_type_card_shape_selected);
+            }else {
+                listView.findViewById(R.id.luxListItem).setBackgroundResource(R.drawable.vehicle_type_card_shape_selected);
+            }
+
         }
-        listView.findViewById(R.id.standardListItem).setBackgroundResource(0);
-        listView.findViewById(R.id.vanListItem).setBackgroundResource(0);
-        listView.findViewById(R.id.luxListItem).setBackgroundResource(0);
-        if(this.vehicleType.getVehicleCategory() == VehicleCategory.STANDARD){
-            listView.findViewById(R.id.standardListItem).setBackgroundResource(R.drawable.vehicle_type_card_shape_selected);
-        }else if (this.vehicleType.getVehicleCategory() == VehicleCategory.VAN) {
-            listView.findViewById(R.id.vanListItem).setBackgroundResource(R.drawable.vehicle_type_card_shape_selected);
-        }else {
-            listView.findViewById(R.id.luxListItem).setBackgroundResource(R.drawable.vehicle_type_card_shape_selected);
-        }
+
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         propertiesChangedListener = (OnRidePropertiesChangedListener) getParentFragment();
-        vehicleTypeService = APIClient.getClient().create(VehicleTypeService.class);
         imageService = APIClient.getClient().create(ImageService.class);
     }
     private Observable<VehicleType> fetchImage(VehicleTypeDTO vehicleTypeDTO){

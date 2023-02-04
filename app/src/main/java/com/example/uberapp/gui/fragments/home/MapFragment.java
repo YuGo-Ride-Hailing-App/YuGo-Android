@@ -138,7 +138,8 @@ public class MapFragment extends Fragment implements LocationListener{
                 map.getOverlays().remove(overlay);
             }
         }
-        if (getActivity().isDestroyed())
+
+        if (getActivity()==null || getActivity().isDestroyed())
             return;
         Marker marker = new Marker(map);
         GeoPoint geoPoint = new GeoPoint(latitude,longitude);

@@ -66,11 +66,7 @@ public class PassengerMainActivity extends AppCompatActivity implements Navigati
         bottomNavigationView.setOnItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.passenger_home);
 
-        FavoritePathDTO favoritePath = (FavoritePathDTO) getIntent().getSerializableExtra("FAVORITE_PATH");
-        if(favoritePath != null){
-            getSupportFragmentManager().beginTransaction().replace(R.id.flPassengerMainFragment, homeFragment).commit();
-            homeFragment.loadFavoritePath(favoritePath);
-        }
+
 
         this.setupMessagesSocket();
     }
@@ -116,6 +112,15 @@ public class PassengerMainActivity extends AppCompatActivity implements Navigati
 
             }
         });
+    }
+
+    public void setup(FavoritePathDTO favoritePathDTO){
+        if(favoritePathDTO != null){
+            getSupportFragmentManager().beginTransaction().replace(R.id.flPassengerMainFragment, homeFragment).commit();
+            getSupportFragmentManager().executePendingTransactions();
+            homeFragment.loadFavoritePath(favoritePathDTO);
+        }
+
     }
 
     @Override

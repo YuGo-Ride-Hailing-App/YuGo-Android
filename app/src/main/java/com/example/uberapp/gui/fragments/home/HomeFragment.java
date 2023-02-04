@@ -18,6 +18,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -111,7 +112,10 @@ public class HomeFragment extends Fragment implements CurrentRideFragment.OnEndC
 
     public void loadFavoritePath(FavoritePathDTO favoritePath){
         createRideSheet = new CreateRideSheet();
-        getChildFragmentManager().beginTransaction().replace(R.id.homeFragmentContentHolder, createRideSheet).commit();
+
+        FragmentTransaction transaction=getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.homeFragmentContentHolder, createRideSheet).commit();
+        getChildFragmentManager().executePendingTransactions();
         createRideSheet.loadFavoritePath(favoritePath);
         createRideSheet.show(getChildFragmentManager(), null);
     }
@@ -250,8 +254,12 @@ public class HomeFragment extends Fragment implements CurrentRideFragment.OnEndC
 
         } else {
             if (savedInstanceState == null) {
-                createRideSheet = new CreateRideSheet();
-                getChildFragmentManager().beginTransaction().add(R.id.homeFragmentContentHolder, createRideSheet).commit();
+                if (createRideSheet==null || !createRideSheet.isAdded()) {
+                    createRideSheet = new CreateRideSheet();
+                    getChildFragmentManager().beginTransaction().add(R.id.homeFragmentContentHolder, createRideSheet).commit();
+                    getChildFragmentManager().executePendingTransactions();
+                }
+
             }
             activeRide = rideService.getActivePassengerRide(TokenManager.getUserId());
             mapFragment = MapFragment.newInstance(false);

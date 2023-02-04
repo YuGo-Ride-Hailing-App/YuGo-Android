@@ -61,12 +61,14 @@ public class CreateRideSubfragment01 extends Fragment {
     public void setDepartureAddress(LocationInfo locationInfo){
         departureEditText.setText(locationInfo.getAddress());
         departure = locationInfo;
-        routeChangedListener.onRideRouteChanged(departure, destination);
+        if (departure!=null && destination!=null)
+            routeChangedListener.onRideRouteChanged(departure, destination);
     }
     public void setDestinationAddress(LocationInfo locationInfo){
         destinationEditText.setText(locationInfo.getAddress());
         destination = locationInfo;
-        routeChangedListener.onRideRouteChanged(departure, destination);
+        if (departure!=null && destination!=null)
+            routeChangedListener.onRideRouteChanged(departure, destination);
     }
 
     @SuppressLint("CheckResult")
